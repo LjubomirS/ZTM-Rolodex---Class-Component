@@ -1,62 +1,52 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
+
 import CardList from "./components/card-list/card-list.component.jsx"
 import SearchBox from "./components/search-box/search-box.component.jsx"
-
 import './App.css';
 
-class App extends Component {
-  constructor(){
-    super();
 
-    this.state = {
-      bubice:[],
-      searchBar:'',
-    };
-    
-  }
+const App = ()=>{
+  
+  const [searchField, setSearchField]= useState('');
+  const [bubice, setBubice]= useState([]);
+  const [filteredBubice, setFilteredBubice] = useState(bubice);
 
-componentDidMount(){
- 
-  fetch('https://jsonplaceholder.typicode.com/users')
-  .then(response=>response.json())
-  .then((users)=>this.setState(()=>{
-    return {bubice: users}
-  }
-  ))
-}
+  console.log('render');
+  
+  useEffect(()=>{
+    console.log('effect fired');
+    fetch('https://jsonplaceholder.typicode.com/users')
+    .then((response)=>response.json())
+    .then((users)=> setBubice(users));
+  }, []);
 
-searchChange = (event)=>{
-  const searchBar = event.target.value.toLocaleLowerCase();
-            
-  this.setState(()=>{
-    return { searchBar }
-  })
-}
-
-  render(){
-    
-
-    const { bubice, searchBar } = this.state;
-    const { searchChange } = this;
-
-    const filteredBubice = bubice.filter((bubica)=>{
-      return bubica.name.toLocaleLowerCase().includes(searchBar);
+  useEffect(()=>{
+    const newFilteredBubice = bubice.filter((bubica)=>{
+      return bubica.name.toLocaleLowerCase().includes(searchField);
     });
+    setFilteredBubice(newFilteredBubice)
+  }, [bubice, searchField]);
+  
+  const onSearchChange = (event)=>{
+      const searchFieldString = event.target.value.toLocaleLowerCase();
+      setSearchField(searchFieldString);
+    }
 
-    return (
-      <div className="App">
+  return(
+    <div className="App">
 
         <h1 className="titleStyle">Bubice Rolodex</h1>
         
         <SearchBox 
-        onChangeHandler={ searchChange } 
+        onChangeHandler={ onSearchChange } 
         placeholder='search bubice'
         className='bubice-search-box' 
         />
+
         <CardList bubice= {filteredBubice} />
+
       </div>
-    );
-  }
+  )
 }
 
 export default App;

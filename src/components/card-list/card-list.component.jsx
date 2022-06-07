@@ -1,15 +1,8 @@
-import { Component } from 'react';
 import CardContainer from './card-container/card-container.component.jsx'
 import './card-list.styles.css'
 
 
-class CardList extends Component {
-
-    render() {
-        console.log('render');
-        const { bubice } = this.props;
-
-        return (
+const CardList = ({ bubice })=> (
         <div className='card-list'>
            {bubice.map((bubica)=>{
               
@@ -19,8 +12,6 @@ class CardList extends Component {
                 })}
            
         </div>        
-        )
-    }
-}
+        );
 
 export default CardList;
